@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="23dp"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:text="@{title}"/>
@@ -34,22 +34,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{titleRow}"
+            android:textSize="20dp"
+            android:textColor="@color/black"
             android:layout_marginStart="16dp"/>
 
         <EditText
             android:id="@+id/etRow"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:minWidth="50dp"
+            android:textSize="20dp"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:maxLength="3"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{titleHigh}"
+            android:textSize="20dp"
+            android:textColor="@color/black"
             android:layout_marginStart="20dp"/>
 
         <EditText
             android:id="@+id/etHigh"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:minWidth="50dp"
+            android:textSize="20dp"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:maxLength="3"/>
     </LinearLayout>
 </layout>

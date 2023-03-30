@@ -42,7 +42,7 @@
             <include layout="@layout/layout_gallery_edittext"
                 android:id="@+id/layoutH"
                 app:title="@{`H : `}"
-                app:titleRow="@{`ROW`}"
+                app:titleRow="@{`Row`}"
                 app:titleHigh="@{`High`}"/>
 
             <com.google.android.material.slider.RangeSlider
@@ -60,7 +60,7 @@
             <include layout="@layout/layout_gallery_edittext"
                 android:id="@+id/layoutS"
                 app:title="@{`S : `}"
-                app:titleRow="@{`ROW`}"
+                app:titleRow="@{`Row`}"
                 app:titleHigh="@{`High`}"/>
 
             <com.google.android.material.slider.RangeSlider
@@ -78,7 +78,7 @@
             <include layout="@layout/layout_gallery_edittext"
                 android:id="@+id/layoutV"
                 app:title="@{`V : `}"
-                app:titleRow="@{`ROW`}"
+                app:titleRow="@{`Row`}"
                 app:titleHigh="@{`High`}"/>
 
             <com.google.android.material.slider.RangeSlider

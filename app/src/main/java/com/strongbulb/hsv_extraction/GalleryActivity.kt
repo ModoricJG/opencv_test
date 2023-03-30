@@ -12,7 +12,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.android.material.slider.RangeSlider
+import com.strongbulb.hsv_extraction.constants.SharedPreferenceKeys
 import com.strongbulb.hsv_extraction.databinding.ActivityGalleryBinding
+import com.strongbulb.hsv_extraction.extension.getSharedPreferenceInt
+import com.strongbulb.hsv_extraction.extension.putSharedPreferenceInt
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvException
@@ -35,8 +38,24 @@ class GalleryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGalleryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initView()
         setOnClickListener()
         setOnRangeListener()
+    }
+
+    private fun initView() {
+        binding.run {
+            val hRow =  this@GalleryActivity.getSharedPreferenceInt(SharedPreferenceKeys.HRowValue.name)
+            val hHigh = this@GalleryActivity.getSharedPreferenceInt(SharedPreferenceKeys.HHighValue.name, defaultValue = 255)
+            val sRow =  this@GalleryActivity.getSharedPreferenceInt(SharedPreferenceKeys.SRowValue.name)
+            val sHigh = this@GalleryActivity.getSharedPreferenceInt(SharedPreferenceKeys.SHighValue.name, defaultValue = 255)
+            val vRow =  this@GalleryActivity.getSharedPreferenceInt(SharedPreferenceKeys.VRowValue.name)
+            val vHigh = this@GalleryActivity.getSharedPreferenceInt(SharedPreferenceKeys.VHighValue.name, defaultValue = 255)
+            binding.rangeH.setValues(hRow?.toFloat(), hHigh?.toFloat())
+            binding.rangeS.setValues(sRow?.toFloat(), sHigh?.toFloat())
+            binding.rangeV.setValues(vRow?.toFloat(), vHigh?.toFloat())
+            setRecordText()
+        }
     }
 
     private fun setOnClickListener() {
@@ -53,6 +72,8 @@ class GalleryActivity : AppCompatActivity() {
                 override fun onStartTrackingTouch(slider: RangeSlider) {}
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
+                    this@GalleryActivity.putSharedPreferenceInt(SharedPreferenceKeys.HRowValue.name, slider.values[0].toInt())
+                    this@GalleryActivity.putSharedPreferenceInt(SharedPreferenceKeys.HHighValue.name, slider.values[1].toInt())
                     setRecordText()
                     imgProcessing()
                 }
@@ -62,6 +83,8 @@ class GalleryActivity : AppCompatActivity() {
                 override fun onStartTrackingTouch(slider: RangeSlider) {}
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
+                    this@GalleryActivity.putSharedPreferenceInt(SharedPreferenceKeys.SRowValue.name, slider.values[0].toInt())
+                    this@GalleryActivity.putSharedPreferenceInt(SharedPreferenceKeys.SHighValue.name, slider.values[1].toInt())
                     setRecordText()
                     imgProcessing()
                 }
@@ -70,6 +93,8 @@ class GalleryActivity : AppCompatActivity() {
                 override fun onStartTrackingTouch(slider: RangeSlider) {}
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
+                    this@GalleryActivity.putSharedPreferenceInt(SharedPreferenceKeys.VRowValue.name, slider.values[0].toInt())
+                    this@GalleryActivity.putSharedPreferenceInt(SharedPreferenceKeys.VHighValue.name, slider.values[1].toInt())
                     setRecordText()
                     imgProcessing()
                 }
