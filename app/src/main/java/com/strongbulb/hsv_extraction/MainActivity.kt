@@ -2,7 +2,8 @@ package com.strongbulb.hsv_extraction
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.strongbulb.hsv_extraction.constants.SharedPreferenceKeys
@@ -25,7 +26,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        removeEditTextListener()
         initView()
+        setOnEditTextChangeListener()
     }
 
     private fun initView() {
@@ -51,37 +54,86 @@ class MainActivity : AppCompatActivity() {
             btnFindGallery.setOnClickListener {
                 startActivity(Intent(this@MainActivity, GalleryActivity::class.java))
             }
+            btnFindCamera.setOnClickListener {
+                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
+            }
+        }
+    }
+
+    private val hEtRowWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            if(s?.toString().isNullOrBlank()) return
+            this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.HRowValue.name, s?.toString()?.toInt() ?: 0)
+        }
+    }
+
+    private val hEtHighWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            if(s?.toString().isNullOrBlank()) return
+            this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.HHighValue.name, s?.toString()?.toInt() ?: 0)
+        }
+    }
+
+    private val sEtRowWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            if(s?.toString().isNullOrBlank()) return
+            this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.SRowValue.name, s?.toString()?.toInt() ?: 0)
+        }
+    }
+
+    private val sEtHighWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            if(s?.toString().isNullOrBlank()) return
+            this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.SHighValue.name, s?.toString()?.toInt() ?: 0)
+        }
+    }
+
+    private val vEtRowWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            if(s?.toString().isNullOrBlank()) return
+            this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.VRowValue.name, s?.toString()?.toInt() ?: 0)
+        }
+    }
+
+    private val vEtHighWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            if(s?.toString().isNullOrBlank()) return
+            this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.VHighValue.name, s?.toString()?.toInt() ?: 0)
         }
     }
 
     private fun setOnEditTextChangeListener() {
         binding.run {
-            layoutH.etRow.addTextChangedListener {
-                if(it?.toString().isNullOrBlank()) return@addTextChangedListener
-                this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.HRowValue.name, it?.toString()?.toInt() ?: 0)
-            }
-            layoutH.etHigh.addTextChangedListener {
-                if(it?.toString().isNullOrBlank()) return@addTextChangedListener
-                this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.HHighValue.name, it?.toString()?.toInt() ?: 0)
-            }
-            layoutS.etRow.addTextChangedListener {
-                if(it?.toString().isNullOrBlank()) return@addTextChangedListener
-                this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.SRowValue.name, it?.toString()?.toInt() ?: 0)
-            }
-            layoutS.etHigh.addTextChangedListener {
-                if(it?.toString().isNullOrBlank()) return@addTextChangedListener
-                this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.SHighValue.name, it?.toString()?.toInt() ?: 0)
-            }
-            layoutV.etRow.addTextChangedListener {
-                if(it?.toString().isNullOrBlank()) return@addTextChangedListener
-                this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.VRowValue.name, it?.toString()?.toInt() ?: 0)
-            }
-            layoutV.etHigh.addTextChangedListener {
-                if(it?.toString().isNullOrBlank()) return@addTextChangedListener
-                this@MainActivity.putSharedPreferenceInt(SharedPreferenceKeys.VHighValue.name, it?.toString()?.toInt() ?: 0)
-            }
+            layoutH.etRow.addTextChangedListener(hEtRowWatcher)
+            layoutH.etHigh.addTextChangedListener(hEtHighWatcher)
+            layoutS.etRow.addTextChangedListener(sEtRowWatcher)
+            layoutS.etHigh.addTextChangedListener(sEtHighWatcher)
+            layoutV.etRow.addTextChangedListener(vEtRowWatcher)
+            layoutV.etHigh.addTextChangedListener(vEtHighWatcher)
         }
+    }
 
+    private fun removeEditTextListener() {
+        binding.run {
+            layoutH.etRow.removeTextChangedListener(hEtRowWatcher)
+            layoutH.etHigh.removeTextChangedListener(hEtHighWatcher)
+            layoutS.etRow.removeTextChangedListener(sEtRowWatcher)
+            layoutS.etHigh.removeTextChangedListener(sEtHighWatcher)
+            layoutV.etRow.removeTextChangedListener(vEtRowWatcher)
+            layoutV.etHigh.removeTextChangedListener(vEtHighWatcher)
+        }
     }
 
 }

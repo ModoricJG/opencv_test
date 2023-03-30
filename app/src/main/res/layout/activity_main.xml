@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="앨범에서 찾기"/>
+                android:text="앨범 이미지 적용 테스트"/>
 
             <Button
                 android:id="@+id/btnFindCamera"
@@ -58,7 +58,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="20dp"
-                android:text="카메라로 찾기"/>
+                android:text="카메라 적용 테스트"/>
 
             <Button
                 android:id="@+id/btnTest"
@@ -67,7 +67,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="20dp"
-                android:text="테스트 해보기"/>
+                android:text="기능 추가전"
+                android:visibility="gone"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

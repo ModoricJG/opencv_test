@@ -10,7 +10,8 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Hsv_extraction">
+        android:theme="@style/Theme.Hsv_extraction"
+        android:hardwareAccelerated="true">
 
         <activity
             android:name=".GalleryActivity"
@@ -20,13 +21,15 @@
             android:name=".CameraActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.Hsv_extraction.NoActionBar"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="screenSize|orientation"
             android:exported="false" />
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:configChanges="screenSize|orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -16,6 +16,7 @@ import com.strongbulb.hsv_extraction.constants.SharedPreferenceKeys
 import com.strongbulb.hsv_extraction.databinding.ActivityGalleryBinding
 import com.strongbulb.hsv_extraction.extension.getSharedPreferenceInt
 import com.strongbulb.hsv_extraction.extension.putSharedPreferenceInt
+import com.strongbulb.hsv_extraction.module.FilterModule
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvException
@@ -117,31 +118,13 @@ class GalleryActivity : AppCompatActivity() {
     private fun imgProcessing() {
         binding.ivDstImg.isVisible = true
         currentImageUri?.run {
-            val originMat = uri2Mat(this)
-            val hsvMat = matCvtHsv(originMat)
+            val originMat = FilterModule.uri2Mat(this@GalleryActivity, this)
+            val hsvMat = FilterModule.matCvtHsv(originMat)
             val rangeMat = matRange(hsvMat)
-            val mask = matMask(originMat, rangeMat)
-            val dstBitmap = convertMatToBitMap(mask)
+            val mask = FilterModule.matMask(originMat, rangeMat)
+            val dstBitmap = FilterModule.convertMatToBitMap(mask)
             binding.ivDstImg.setImageBitmap(dstBitmap)
         }
-    }
-
-    private fun uri2Mat(uri: Uri) : Mat {
-        val bmpFactoryOptions = BitmapFactory.Options()
-        bmpFactoryOptions.inPreferredConfig = Bitmap.Config.ARGB_8888
-        val bmp = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-        val dst = Mat()
-        Utils.bitmapToMat(bmp, dst)
-        return dst
-    }
-
-    /**
-     * HSV 변환
-     */
-    private fun matCvtHsv(mat: Mat) : Mat {
-        val dst = Mat()
-        Imgproc.cvtColor(mat, dst, Imgproc.COLOR_RGB2HSV)
-        return dst
     }
 
     /**
@@ -153,28 +136,7 @@ class GalleryActivity : AppCompatActivity() {
         val v = binding.rangeV.values
         val lowerb = Scalar(h[0].toDouble(),s[0].toDouble(),v[0].toDouble())
         val upperb = Scalar(h[1].toDouble(),s[1].toDouble(),v[1].toDouble())
-        val dst = Mat()
-        Core.inRange(mat, lowerb, upperb, dst)
-        return dst
-    }
-
-    private fun matMask(originMat: Mat, mat: Mat) : Mat {
-        val dst = Mat()
-        Core.bitwise_and(originMat, originMat, dst, mat)
-        return dst
-    }
-
-    private fun convertMatToBitMap(input: Mat): Bitmap? {
-        var bmp: Bitmap? = null
-        val rgb = Mat()
-        Imgproc.cvtColor(input, rgb, Imgproc.CV_RGBA2mRGBA)
-        try {
-            bmp = Bitmap.createBitmap(rgb.cols(), rgb.rows(), Bitmap.Config.ARGB_8888)
-            Utils.matToBitmap(rgb, bmp)
-        } catch (e: CvException) {
-            Log.d("Exception", e.message ?: "")
-        }
-        return bmp
+        return FilterModule.matRange(mat, lowerb, upperb)
     }
 
     private fun startDefaultGalleryApp() {

@@ -4,11 +4,17 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import com.strongbulb.hsv_extraction.constants.SharedPreferenceKeys
+import com.strongbulb.hsv_extraction.extension.getSharedPreferenceInt
+import com.strongbulb.hsv_extraction.module.FilterModule
 import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame
@@ -16,16 +22,30 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2
 import org.opencv.android.LoaderCallbackInterface
 import org.opencv.android.OpenCVLoader
 import org.opencv.core.Mat
-import java.util.Collections
+import org.opencv.core.Scalar
+import java.util.*
 
 
 class CameraActivity : AppCompatActivity(), CvCameraViewListener2 {
+
     private var mOpenCvCameraView: CameraBridgeViewBase? = null
+    var drawerLayout: DrawerLayout? = null
+    var actionBarDrawerToggle: ActionBarDrawerToggle? = null
+
+    var hRow  : Int? = null
+    var hHigh : Int? = null
+    var sRow  : Int? = null
+    var sHigh : Int? = null
+    var vRow  : Int? = null
+    var vHigh : Int? = null
+    var lowerb : Scalar? = null
+    var upperb : Scalar? = null
 
     private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
         override fun onManagerConnected(status: Int) {
             when (status) {
                 SUCCESS -> {
+                    mOpenCvCameraView?.setMaxFrameSize(500,500)
                     mOpenCvCameraView?.enableView()
                 }
                 else -> {
@@ -46,10 +66,29 @@ class CameraActivity : AppCompatActivity(), CvCameraViewListener2 {
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         )
         setContentView(R.layout.activity_camera)
+
+        initValue()
         mOpenCvCameraView = findViewById<View>(R.id.activity_surface_view) as CameraBridgeViewBase
         mOpenCvCameraView!!.visibility = SurfaceView.VISIBLE
         mOpenCvCameraView!!.setCvCameraViewListener(this)
         mOpenCvCameraView!!.setCameraIndex(0) // front-camera(1),  back-camera(0)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (actionBarDrawerToggle?.onOptionsItemSelected(item) == true) {
+            true
+        } else super.onOptionsItemSelected(item)
+    }
+
+    private fun initValue() {
+        hRow =  this@CameraActivity.getSharedPreferenceInt(SharedPreferenceKeys.HRowValue.name)
+        hHigh = this@CameraActivity.getSharedPreferenceInt(SharedPreferenceKeys.HHighValue.name, defaultValue = 255)
+        sRow =  this@CameraActivity.getSharedPreferenceInt(SharedPreferenceKeys.SRowValue.name)
+        sHigh = this@CameraActivity.getSharedPreferenceInt(SharedPreferenceKeys.SHighValue.name, defaultValue = 255)
+        vRow =  this@CameraActivity.getSharedPreferenceInt(SharedPreferenceKeys.VRowValue.name)
+        vHigh = this@CameraActivity.getSharedPreferenceInt(SharedPreferenceKeys.VHighValue.name, defaultValue = 255)
+        lowerb = Scalar(hRow?.toDouble() ?: 0.0, sRow?.toDouble() ?: 0.0, vRow?.toDouble() ?: 0.0)
+        upperb = Scalar(hHigh?.toDouble() ?: 0.0, sHigh?.toDouble() ?: 0.0,vHigh?.toDouble() ?: 0.0)
     }
 
     public override fun onPause() {
@@ -69,14 +108,18 @@ class CameraActivity : AppCompatActivity(), CvCameraViewListener2 {
     }
 
     public override fun onDestroy() {
-        super.onDestroy()
         if (mOpenCvCameraView != null) mOpenCvCameraView!!.disableView()
+        super.onDestroy()
     }
 
     override fun onCameraViewStarted(width: Int, height: Int) {}
     override fun onCameraViewStopped() {}
     override fun onCameraFrame(inputFrame: CvCameraViewFrame): Mat {
-        return inputFrame.rgba()
+        val originMat = inputFrame.rgba()
+        val hsvMat = FilterModule.matCvtHsv(originMat)
+        val rangeMat = FilterModule.matRange(hsvMat, lowerb!!, upperb!!)
+        val mask = FilterModule.matMask(originMat, rangeMat)
+        return mask
     }
 
     private val cameraViewList: List<CameraBridgeViewBase?>
