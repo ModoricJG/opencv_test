@@ -4,20 +4,18 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.google.android.material.slider.RangeSlider
 import com.strongbulb.hsv_extraction.databinding.ActivityGalleryBinding
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvException
-import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
@@ -25,7 +23,7 @@ import org.opencv.imgproc.Imgproc
 
 class GalleryActivity : AppCompatActivity() {
 
-    val defaultGalleryRequestCode = 10
+    private val defaultGalleryRequestCode = 10
     private lateinit var binding: ActivityGalleryBinding
     private var currentImageUri: Uri? = null
 
@@ -52,35 +50,47 @@ class GalleryActivity : AppCompatActivity() {
     private fun setOnRangeListener() {
         binding.run {
             rangeH.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener{
-                override fun onStartTrackingTouch(slider: RangeSlider) {
-                }
+                override fun onStartTrackingTouch(slider: RangeSlider) {}
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
-                    Log.i("mylog", "v[0] = ${slider.values[0]}, v[1] = ${slider.values[1]}")
+                    setRecordText()
                     imgProcessing()
                 }
             })
 
             rangeS.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener{
-                override fun onStartTrackingTouch(slider: RangeSlider) {
-                }
+                override fun onStartTrackingTouch(slider: RangeSlider) {}
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
+                    setRecordText()
                     imgProcessing()
                 }
             })
             rangeV.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener{
-                override fun onStartTrackingTouch(slider: RangeSlider) {
-                }
+                override fun onStartTrackingTouch(slider: RangeSlider) {}
 
                 override fun onStopTrackingTouch(slider: RangeSlider) {
+                    setRecordText()
                     imgProcessing()
                 }
             })
         }
     }
 
+    private fun setRecordText() {
+        val h = binding.rangeH.values // RangeSlider를 통해 값의 범위를 가져옴
+        val s = binding.rangeS.values
+        val v = binding.rangeV.values
+        binding.layoutH.etRow.setText("${h[0].toInt()}")
+        binding.layoutH.etHigh.setText("${h[1].toInt()}")
+        binding.layoutS.etRow.setText("${s[0].toInt()}")
+        binding.layoutS.etHigh.setText("${s[1].toInt()}")
+        binding.layoutV.etRow.setText("${v[0].toInt()}")
+        binding.layoutV.etHigh.setText("${v[1].toInt()}")
+    }
+
     private fun imgProcessing() {
+        binding.ivDstImg.isVisible = true
         currentImageUri?.run {
             val originMat = uri2Mat(this)
             val hsvMat = matCvtHsv(originMat)
@@ -160,29 +170,9 @@ class GalleryActivity : AppCompatActivity() {
         when (requestCode) {
             defaultGalleryRequestCode -> {
                 currentImageUri = data?.data
-                Log.i("mylog", "data?.data = ${currentImageUri}")
-
-                try{
-                    currentImageUri?.let {
-                        if(Build.VERSION.SDK_INT < 28) {
-                            val matBitmap = MediaStore.Images.Media.getBitmap(
-                                this.contentResolver,
-                                currentImageUri
-                            )
-                            binding.ivMatImg.setImageBitmap(matBitmap)
-                        } else {
-                            val source = ImageDecoder.createSource(this.contentResolver, it)
-                            val matBitmap = ImageDecoder.decodeBitmap(source)
-                            binding.ivMatImg.setImageBitmap(matBitmap)
-                        }
-                    }
-
-                }catch(e: java.lang.Exception)
-                {
-                    e.printStackTrace()
-                }
+                imgProcessing()
+                setRecordText()
             }
-
             else -> {
                 Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
             }

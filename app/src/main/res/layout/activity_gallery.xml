@@ -17,26 +17,10 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clMatImageContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/btnOpenGallery"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintDimensionRatio="2:1">
-
-            <ImageView
-                android:id="@+id/ivMatImg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clDstImageContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/clMatImageContainer"
+            app:layout_constraintTop_toBottomOf="@+id/btnOpenGallery"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintDimensionRatio="2:1">
@@ -55,6 +39,12 @@
             app:layout_constraintTop_toBottomOf="@+id/clDstImageContainer"
             app:layout_constraintBottom_toBottomOf="parent">
 
+            <include layout="@layout/layout_gallery_edittext"
+                android:id="@+id/layoutH"
+                app:title="@{`H : `}"
+                app:titleRow="@{`ROW`}"
+                app:titleHigh="@{`High`}"/>
+
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/rangeH"
                 android:layout_width="match_parent"
@@ -62,10 +52,16 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:valueFrom="0.0"
-                android:valueTo="255.0"
-                android:stepSize="1.0"
+                android:valueFrom="0"
+                android:valueTo="255"
+                android:stepSize="1"
                 app:values="@array/initial_values_h"/>
+
+            <include layout="@layout/layout_gallery_edittext"
+                android:id="@+id/layoutS"
+                app:title="@{`S : `}"
+                app:titleRow="@{`ROW`}"
+                app:titleHigh="@{`High`}"/>
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/rangeS"
@@ -74,10 +70,16 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:valueFrom="0.0"
-                android:valueTo="255.0"
-                android:stepSize="1.0"
+                android:valueFrom="0"
+                android:valueTo="255"
+                android:stepSize="1"
                 app:values="@array/initial_values_s"/>
+
+            <include layout="@layout/layout_gallery_edittext"
+                android:id="@+id/layoutV"
+                app:title="@{`V : `}"
+                app:titleRow="@{`ROW`}"
+                app:titleHigh="@{`High`}"/>
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/rangeV"
@@ -86,9 +88,9 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:valueFrom="0.0"
-                android:valueTo="255.0"
-                android:stepSize="1.0"
+                android:valueFrom="0"
+                android:valueTo="255"
+                android:stepSize="1"
                 app:values="@array/initial_values_v"/>
         </LinearLayout>
 
