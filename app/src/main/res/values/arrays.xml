@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="initial_values_h">
+        <item>80.0</item>
+        <item>100.0</item>
+    </array>
+
+    <array name="initial_values_s">
+        <item>100.0</item>
+        <item>255.0</item>
+    </array>
+
+    <array name="initial_values_v">
+        <item>100.0</item>
+        <item>255.0</item>
+    </array>
+</resources>
